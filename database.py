@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from sqlalchemy import Boolean, Column, DateTime, Float, create_engine
+from sqlalchemy import Boolean, Column, BIGINT, DateTime, Float, create_engine, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -13,21 +13,27 @@ Base = declarative_base()
 # Model
 class TankUpdate(Base):
     __tablename__ = "tank_update"
-    update_date = Column(DateTime, primary_key=True)
-
-    # Left side
-    left_side_temp = Column(Float)
-    left_side_humidity = Column(Float)
-
-    # Right side
-    right_side_temp = Column(Float)
-    right_side_humidity = Column(Float)
-
-    # heat lamp status
+    id = Column(BIGINT, primary_key=True, autoincrement=True)
+    update = Column(DateTime)
+    successful_read = Column(Boolean)
+    sensor_side = Column(String)
+    sensor_temp = Column(Float)
+    sensor_humidity = Column(String)
     heat_lamp_on = Column(Boolean)
 
     def __repr__(self):
-        return f"{self.update_date} {self.left_side_temp}"
+        return f"{self.update_date} {self.sensor_side} {self.sensor_temp}"
+
+    @property
+    def to_dict(self):
+        return {
+            "update": self.update_date.strftime("%m-%d-%y %H:%M"),
+            "successful_read": self.successful_read,
+            "sensor_side": self.sensor_side,
+            "sensor_temp": self.sensor_temp,
+            "sensor_humidity": self.sensor_humidity,
+            "heat_lamp_on": self.heat_lamp_status
+        }
 
 
 # Create an engine object, create the databases if they don't exist, create a session factory
