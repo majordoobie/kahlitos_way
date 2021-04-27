@@ -16,7 +16,7 @@ pyusb==1.1.1
 rpi-ws281x==4.2.6
 RPi.GPIO==0.7.0
 SQLAlchemy==1.4.11
-starlette==0.14.2
+starlette==0.13.6
 sysv-ipc==1.1.0
 typing-extensions==3.7.4.3
 uvicorn==0.13.4

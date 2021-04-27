@@ -27,12 +27,12 @@ class TankUpdate(Base):
     @property
     def to_dict(self):
         return {
-            "update": self.update_date.strftime("%m-%d-%y %H:%M"),
+            "update": self.update.strftime("%m-%d-%y %H:%M"),
             "successful_read": self.successful_read,
             "sensor_side": self.sensor_side,
             "sensor_temp": self.sensor_temp,
             "sensor_humidity": self.sensor_humidity,
-            "heat_lamp_on": self.heat_lamp_status
+            "heat_lamp_on": self.heat_lamp_on
         }
 
 
