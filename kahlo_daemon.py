@@ -251,7 +251,7 @@ def main() -> bool:
 
 
 if __name__ == "__main__":
-    logging.config.fileConfig('logs/logging.conf')
+    logging.config.fileConfig('/home/pi/code/khalito_client/logs/logging.conf')
     try:
         loop = True
         while loop:
