@@ -4,23 +4,26 @@ from datetime import datetime, time
 from time import sleep
 from typing import List
 
+import psutil as psutil
 from adafruit_dht import DHT11
 import RPi.GPIO as GPIO
 
 from database import TankUpdate, session_scope
 
 # Sleep time
-SLEEP = 60
+SLEEP = 300
 # Temp sensors
-LEFT_SIDE_SENSOR_PIN = 22
-RIGHT_SIDE_SENSOR_PIN = 23
+LEFT_SIDE_SENSOR_PIN = 22                               # GPIO PIN
+RIGHT_SIDE_SENSOR_PIN = 23                              # GPIO PIN
 SENSORS = [LEFT_SIDE_SENSOR_PIN, RIGHT_SIDE_SENSOR_PIN]
 # Relay
-RELAY_GPIO = 17                                         # Errors out when pin is used
+RELAY_GPIO = 17
 # Configuration
 DAY_TIME = [time(7, 00), time(20, 00)]                  # Daytime range, uses Eastern time
 DAY_TIME_RANGE = [82, 87]                               # Not inclusive range()
 NIGHT_TIME_RANGE = [67, 73]                             # Not inclusive range()
+# Reload fault count
+FAULT_MAX = 2
 
 
 class Relay:
@@ -54,8 +57,13 @@ class Relay:
         self._set_daytime()
         self._set_range()
 
-        if left_temp in range(*self.temp_range):
+        if left_temp == -1:
+            self.log.error("Could not get updated temps. Please check both sensors. "
+                           f"The Relay will remain in {self.is_on()} status")
+
+        elif left_temp in range(*self.temp_range):
             self.log.debug("No change to relay, returning.")
+
         elif left_temp <= self.temp_range[0]:
             if self.is_on() is False:
                 self.log.debug("Turning relay on...")
@@ -100,7 +108,6 @@ class TempSensor(DHT11):
         """
         super().__init__(pin)
         self.pin = pin
-        # self.sensor = adafruit_dht.DHT11(pin)
         self.side = side
         self.ex_temperature = 0.0
         self.ex_humidity = 0.0
@@ -120,7 +127,7 @@ class TempSensor(DHT11):
             try:
                 self.ex_temperature = self.temperature
                 self.ex_humidity = self.humidity
-                self.success_read = True
+                self.success_read = status
                 self.lamp_status = lamp_status
             except RuntimeError:
                 raise
@@ -188,8 +195,7 @@ def _get_sensors(log: logging.Logger) -> List[TempSensor]:
 
 
 def main() -> bool:
-    # Set up logging
-    logging.config.fileConfig('logging.conf')
+    # Get logger
     log = logging.getLogger("root")
 
     # Fetch sensors
@@ -198,26 +204,45 @@ def main() -> bool:
     # Setup relay
     relay = Relay(log=log)
 
-    while True:
+    # Control loop and reloads
+    fault_count = 0
+    running = True
+
+    while running:
         sleep(SLEEP)
 
         # Update sensor data
-        try:
-            for sensor in sensors:
+        for sensor in sensors:
+            try:
                 log.debug(f"Updating {sensor.side} sensor")
                 sensor.update(lamp_status=relay.is_on())
                 log.debug(f"{sensor.side} side temperature sensor updated")
-        except RuntimeError as error:
-            log.error(error, exc_info=True)
-            for sensor in sensors:
+            except RuntimeError as error:
+                log.error(error, exc_info=True)
+                # If sensor failed to read, then update with defaults
                 sensor.update(status=False, lamp_status=relay.is_on())
-        except Exception as error:
-            log.error(error, exc_info=True)
-            log.debug("Attempting to reset script")
-            return True
+            except Exception as error:
+                log.error(error, exc_info=True)
+                log.debug("Attempting to reset script")
+                return True
 
-        # Update relay
-        relay.update(sensors[0].temperature)
+        # Update relay if we got good reads
+        succ_update = True
+        for sensor in sensors:
+            if not sensor.success_read:
+                succ_update = False
+
+        # Increment fault count if can't read sensors
+        if not succ_update:
+            fault_count += 1
+            relay.update(-1)
+        else:
+            relay.update(sensor.temperature)
+
+        # If faults get too high, reload data
+        if fault_count >= FAULT_MAX:
+            log.debug("Fault count exceeded, reloading sensors...")
+            return True
 
         # Update database
         with session_scope() as session:
@@ -226,10 +251,17 @@ def main() -> bool:
 
 
 if __name__ == "__main__":
+    logging.config.fileConfig('logs/logging.conf')
     try:
         loop = True
         while loop:
             loop = main()
             GPIO.cleanup()
+            print("Reloading sensors...")
+            sleep(5)
+            for proc in psutil.process_iter():
+                if proc.name() == 'libgpiod_pulsein' or proc.name() == 'libgpiod_pulsei':
+                    proc.kill()
+            sleep(5)
     except KeyboardInterrupt:
         GPIO.cleanup()

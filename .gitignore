@@ -1,7 +1,11 @@
-database.env
+private/database.env
 .idea
-config.py
-
+private/config.py
+_init__.py
+private/config.py
+private/database.env
+private/__init__.py
+.DS_Store
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -106,7 +110,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-database.env
+private/database.env
 .venv
 env/
 venv/

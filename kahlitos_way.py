@@ -15,10 +15,14 @@ def read_root():
 @kahlito_client.get("/status")
 async def read_status():
     with session_scope() as session:
-        update = session.query(TankUpdate).order_by(desc(TankUpdate.update)).limit(1)
+        update = session.query(TankUpdate).order_by(desc(TankUpdate.update)).limit(2)
 
-    update: TankUpdate = update[0]
-    return update.to_dict
+    dict_list = []
+    for result in update:
+        update: TankUpdate = result
+        dict_list.append(update.to_dict)
+
+    return dict_list
 
 
 if __name__ == "__main__":
