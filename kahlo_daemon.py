@@ -21,8 +21,8 @@ SENSORS = [LEFT_SIDE_SENSOR_PIN, RIGHT_SIDE_SENSOR_PIN]
 RELAY_GPIO = 17
 # Configuration
 DAY_TIME = [time(7, 00), time(20, 00)]                  # Daytime range, uses Eastern time
-DAY_TIME_RANGE = [80, 82]                               # Not inclusive range()
-NIGHT_TIME_RANGE = [67, 73]                             # Not inclusive range()
+DAY_TIME_RANGE = [86, 88]                               # Not inclusive range()
+NIGHT_TIME_RANGE = [70, 73]                             # Not inclusive range()
 # Reload fault count
 FAULT_MAX = 2
 
@@ -149,7 +149,7 @@ class TempSensor(DHT11):
             "successful_read": self.success_read,
             "sensor_side": self.side,
             "sensor_temp": self.ex_temperature,
-            "sensor_humidity": self.ex_temperature,
+            "sensor_humidity": self.ex_humidity,
             "heat_lamp_on": self.lamp_status
         }
 
