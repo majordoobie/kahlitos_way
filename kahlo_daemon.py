@@ -11,7 +11,8 @@ import RPi.GPIO as GPIO
 from database import TankUpdate, session_scope
 
 # Sleep time
-SLEEP = 300
+SLEEP = 180
+
 # Temp sensors
 LEFT_SIDE_SENSOR_PIN = 22                               # GPIO PIN
 RIGHT_SIDE_SENSOR_PIN = 23                              # GPIO PIN
@@ -20,7 +21,7 @@ SENSORS = [LEFT_SIDE_SENSOR_PIN, RIGHT_SIDE_SENSOR_PIN]
 RELAY_GPIO = 17
 # Configuration
 DAY_TIME = [time(7, 00), time(20, 00)]                  # Daytime range, uses Eastern time
-DAY_TIME_RANGE = [82, 87]                               # Not inclusive range()
+DAY_TIME_RANGE = [80, 82]                               # Not inclusive range()
 NIGHT_TIME_RANGE = [67, 73]                             # Not inclusive range()
 # Reload fault count
 FAULT_MAX = 2
@@ -57,6 +58,8 @@ class Relay:
         self._set_daytime()
         self._set_range()
 
+        self.log.debug(f"Left temp: {left_temp}")
+
         if left_temp == -1:
             self.log.error("Could not get updated temps. Please check both sensors. "
                            f"The Relay will remain in {self.is_on()} status")
@@ -66,17 +69,19 @@ class Relay:
 
         elif left_temp <= self.temp_range[0]:
             if self.is_on() is False:
+                self.log.info(f"Left temp at: {self.temp_range[0]}")
                 self.log.debug("Turning relay on...")
                 self.on()
-                self.log.info(f"Relay is on: {self.is_on()}")
+                self.log.info(f"Relay is on: {'Yes' if self.is_on() else 'No'}")
             else:
                 self.log.debug("Relay already on, returning")
 
-        else:
+        elif left_temp >= self.temp_range[1]:
             if self.is_on():
+                self.log.info(f"Left temp at: {self.temp_range[1]}")
                 self.log.debug("Turning relay off...")
                 self.off()
-                self.log.info(f"Relay is off: {self.is_on()}")
+                self.log.info(f"Relay is off: {'No' if self.is_on() else 'Yes'}")
             else:
                 self.log.debug("Relay already off, returning")
 
@@ -188,6 +193,7 @@ def _get_sensors(log: logging.Logger) -> List[TempSensor]:
     sides = ["left", "right"]
     log.debug("Fetching sensors")
     for index, sensor in enumerate(SENSORS):
+        print(f"Init: {sides[index]} Pin: {sensor}")
         sensors.append(TempSensor(sensor, sides[index]))
 
     log.debug(f"Fetched sensors {sensors}")
@@ -196,6 +202,7 @@ def _get_sensors(log: logging.Logger) -> List[TempSensor]:
 
 def main() -> bool:
     # Get logger
+    global initial_start
     log = logging.getLogger("root")
 
     # Fetch sensors
@@ -209,7 +216,12 @@ def main() -> bool:
     running = True
 
     while running:
-        sleep(SLEEP)
+        # Quickly start after boot
+        if initial_start:
+            sleep(10)
+            initial_start = False
+        else:
+            sleep(SLEEP)
 
         # Update sensor data
         for sensor in sensors:
@@ -237,7 +249,9 @@ def main() -> bool:
             fault_count += 1
             relay.update(-1)
         else:
-            relay.update(sensor.temperature)
+            for sensor in sensors:
+                if sensor.side == 'left':
+                    relay.update(sensor.temperature)
 
         # If faults get too high, reload data
         if fault_count >= FAULT_MAX:
@@ -252,6 +266,7 @@ def main() -> bool:
 
 if __name__ == "__main__":
     logging.config.fileConfig('/home/pi/code/khalito_client/logs/logging.conf')
+    initial_start = True
     try:
         loop = True
         while loop:

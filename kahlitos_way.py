@@ -9,7 +9,8 @@ kahlito_client = FastAPI()
 
 @kahlito_client.get("/")
 def read_root():
-    return "Return webpage"
+    with session_scope() as session:
+        update = None
 
 
 @kahlito_client.get("/status")
