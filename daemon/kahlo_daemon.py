@@ -8,7 +8,7 @@ import psutil as psutil
 from adafruit_dht import DHT11
 import RPi.GPIO as GPIO
 
-from database import TankUpdate, session_scope
+from application.database import TankUpdate, session_scope
 
 # Sleep time
 SLEEP = 180
