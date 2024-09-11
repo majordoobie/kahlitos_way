@@ -77,16 +77,18 @@ MACRO(SetCompilerFlags)
 
     # Base flags for static analysis. This should be added to both the
     # compiler and linker options
-    set(base_static_analysis
-            "-fsanitize=address"
-            "-fno-omit-frame-pointer"
-            "-fsanitize=undefined"
-            "-fno-sanitize-recover=all"
-            "-fsanitize=float-divide-by-zero"
-            "-fsanitize=float-cast-overflow"
-            "-fno-sanitize=null"
-            "-fno-sanitize=alignment"
-    )
+    if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        set(base_static_analysis
+                "-fsanitize=address"
+                "-fno-omit-frame-pointer"
+                "-fsanitize=undefined"
+                "-fno-sanitize-recover=all"
+                "-fsanitize=float-divide-by-zero"
+                "-fsanitize=float-cast-overflow"
+                "-fno-sanitize=null"
+                "-fno-sanitize=alignment"
+        )
+    endif()
 
 
     # Add debuging symbols if in debug mode
