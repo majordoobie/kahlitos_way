@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.30)
 set(CMAKE_C_COMPILER /usr/bin/gcc)
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
 
+# Generates the compile_commands.json for clangd to perform lsp operations
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 project(kahlito_daemon VERSION 1.0 LANGUAGES C CXX)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)

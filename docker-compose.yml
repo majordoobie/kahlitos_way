@@ -1,0 +1,9 @@
+services:
+  kahlo_service:
+    container_name: kahlo
+    image: kahlo:v1.0
+    build:
+      context: .
+      dockerfile: Dockerfile    
+    volumes:
+      - ./pi_daemon:/opt/code

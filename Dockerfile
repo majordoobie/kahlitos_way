@@ -1,8 +1,8 @@
-FROM ubuntu:noble as base_development
+FROM ubuntu:noble
 
-ENV CMAKE_VERSION=3.22.1
+ENV CMAKE_VERSION=3.30.3
 ENV LLVM_VERSION=18
-ARG BASE_DIR="/src"
+ARG BASE_DIR="/opt/code"
 
 WORKDIR ${BASE_DIR}
 
@@ -51,7 +51,6 @@ RUN wget https://apt.llvm.org/llvm.sh \
     && update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-${LLVM_VERSION} 100 \
     && update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${LLVM_VERSION} 100 \
     && update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-${LLVM_VERSION} 100;
-
 
 CMD ["tail", "-f", "/dev/null"]
 
