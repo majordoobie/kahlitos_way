@@ -1,1 +1,0 @@
-rpicam_encoder.hpp
