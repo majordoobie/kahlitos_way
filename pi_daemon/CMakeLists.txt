@@ -7,22 +7,24 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(kahlito_daemon VERSION 1.0 LANGUAGES C CXX)
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 # Add the cmake modules directory to call functions in them
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/deps")
 
 # Set boiler settings
-include(cmake/BuildUtils.cmake)
+include(BuildUtils)
 SetBoilerSettings()
 
-# option(BUILD_DSA_C_GTESTS "Build GTests for kahlito_daemon" ON)
-# if (BUILD_DSA_C_GTESTS)
-#     # If debug is enabled make sure to include CTest at the root. This will allow
-#     # the ctest config to be placed at the root of the build directory
-#     IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
-#         include(CTest)
-#     ENDIF()
-# ENDIF()
-#
-# add_subdirectory(deps)
+add_subdirectory(deps)
+
+option(BUILD_DSA_C_GTESTS "Build GTests for kahlito_daemon" ON)
+if (BUILD_DSA_C_GTESTS)
+    # If debug is enabled make sure to include CTest at the root. This will allow
+    # the ctest config to be placed at the root of the build directory
+    IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        include(CTest)
+        add_subdirectory(tests)
+    ENDIF()
+ENDIF()
+
 add_subdirectory(src)
