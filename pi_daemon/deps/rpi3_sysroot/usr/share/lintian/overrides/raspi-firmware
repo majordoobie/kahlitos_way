@@ -1,0 +1,26 @@
+# The package distributes non-free binaries (for which the source is not
+# public) and contains bootloader code, so override a bunch of lintian warnings
+raspi-firmware: arch-independent-package-contains-binary-or-object [usr/lib/raspi-firmware/start.elf]
+raspi-firmware: arch-independent-package-contains-binary-or-object [usr/lib/raspi-firmware/start4.elf]
+raspi-firmware: arch-independent-package-contains-binary-or-object [usr/lib/raspi-firmware/start_cd.elf]
+raspi-firmware: arch-independent-package-contains-binary-or-object [usr/lib/raspi-firmware/start4cd.elf]
+raspi-firmware: arch-independent-package-contains-binary-or-object [usr/lib/raspi-firmware/start_db.elf]
+raspi-firmware: arch-independent-package-contains-binary-or-object [usr/lib/raspi-firmware/start4db.elf]
+raspi-firmware: arch-independent-package-contains-binary-or-object [usr/lib/raspi-firmware/start_x.elf]
+raspi-firmware: arch-independent-package-contains-binary-or-object [usr/lib/raspi-firmware/start4x.elf]
+
+raspi-firmware: embedded-library libpng [usr/lib/raspi-firmware/start.elf]
+raspi-firmware: embedded-library libpng [usr/lib/raspi-firmware/start4.elf]
+raspi-firmware: embedded-library libpng [usr/lib/raspi-firmware/start4db.elf]
+raspi-firmware: embedded-library libpng [usr/lib/raspi-firmware/start4x.elf]
+raspi-firmware: embedded-library libpng [usr/lib/raspi-firmware/start_db.elf]
+raspi-firmware: embedded-library libpng [usr/lib/raspi-firmware/start_x.elf]
+
+raspi-firmware: statically-linked-binary [usr/lib/raspi-firmware/start.elf]
+raspi-firmware: statically-linked-binary [usr/lib/raspi-firmware/start4.elf]
+raspi-firmware: statically-linked-binary [usr/lib/raspi-firmware/start_cd.elf]
+raspi-firmware: statically-linked-binary [usr/lib/raspi-firmware/start4cd.elf]
+raspi-firmware: statically-linked-binary [usr/lib/raspi-firmware/start_db.elf]
+raspi-firmware: statically-linked-binary [usr/lib/raspi-firmware/start4db.elf]
+raspi-firmware: statically-linked-binary [usr/lib/raspi-firmware/start_x.elf]
+raspi-firmware: statically-linked-binary [usr/lib/raspi-firmware/start4x.elf]

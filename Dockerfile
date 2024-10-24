@@ -31,7 +31,11 @@ RUN apt-get install -y \
     doxygen \
     gdb \
     libssl-dev \
+    iputils-ping \
+    fzf \
     openssh-client;
+
+
 
 # Download, build, and install CMake
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz;
@@ -44,13 +48,20 @@ WORKDIR ${BASE_DIR}
 RUN rm -rf cmake-${CMAKE_VERSION} && rm cmake-${CMAKE_VERSION}.tar.gz;
 
 ## Use the llvm script provided by clang to install clang so that we are not arch dependant
-RUN wget https://apt.llvm.org/llvm.sh \
-    && chmod +x llvm.sh \
-    && ./llvm.sh ${LLVM_VERSION} all \
-    && rm llvm.sh \
-    && update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-${LLVM_VERSION} 100 \
-    && update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${LLVM_VERSION} 100 \
-    && update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-${LLVM_VERSION} 100;
+RUN wget https://apt.llvm.org/llvm.sh;
+RUN chmod +x llvm.sh;
+RUN ./llvm.sh ${LLVM_VERSION} all;
+RUN rm llvm.sh;
+RUN update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-${LLVM_VERSION} 100;
+RUN update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${LLVM_VERSION} 100;
+RUN update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-${LLVM_VERSION} 100;
+
+# Add the compilers needed to compile into raspberry pi
+RUN apt install -y \
+    gcc-arm-linux-gnueabihf \
+    g++-arm-linux-gnueabihf;
+
+
+#COPY ./pi_daemon/rpi3_sysroot/ ./deps/
 
 CMD ["tail", "-f", "/dev/null"]
-
