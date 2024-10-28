@@ -1,6 +1,6 @@
 FROM ubuntu:noble
 
-ENV CMAKE_VERSION=3.30.3
+ENV CMAKE_VERSION=3.29.8
 ENV LLVM_VERSION=18
 ARG BASE_DIR="/opt/code"
 
@@ -64,4 +64,4 @@ RUN apt install -y \
 
 #COPY ./pi_daemon/rpi3_sysroot/ ./deps/
 
-CMD ["tail", "-f", "/dev/null"]
+# CMD ["tail", "-f", "/dev/null"]

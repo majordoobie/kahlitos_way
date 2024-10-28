@@ -1,4 +1,8 @@
 pi_daemon/build/
+.idea/
+pi_daemon/.idea/
 .DS_Store
 */.DS_Store
 */rpi3_sysroot/
+pi_daemon/cmake-build-*
+

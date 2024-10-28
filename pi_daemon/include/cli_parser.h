@@ -1,5 +1,8 @@
 #ifndef CLI_PARSER_H
 #define CLI_PARSER_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdint.h>
 
@@ -9,4 +12,7 @@ typedef struct {
 
 cli_t* parse_args(int argc, char** argv);
 
+#ifdef __cplusplus
+}
+#endif
 #endif
