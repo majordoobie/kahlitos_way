@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include <gtest/gtest.h>
 #include <cli_parser.h>
 
@@ -35,9 +37,6 @@ void free_string_array(size_t count, char ** string_array) {
     free(string_array);
 }
 
-TEST(ArgParserTest, TestNumConversion) {
-     
-}
 
 TEST(ArgParserTest, TestNoOptions) {
     int argc = 1;
@@ -63,7 +62,7 @@ TEST(ArgParserTest, TestPortOutOfRange1) {
 
 TEST(ArgParserTest, TestPortOutOfRange2) {
     int argc = 3;
-    const char *argv[] = {"program", "-p", "3000"};
+    const char *argv[] = {"program", "-p", "69000"};
     char ** argv2 = make_string_array((size_t)argc, argv);
 
     cli_t * cli = parse_args(argc, argv2);
@@ -73,3 +72,13 @@ TEST(ArgParserTest, TestPortOutOfRange2) {
 }
 
 
+TEST(ArgParserTest, TestPortOutOfRange3) {
+    int argc = 3;
+    const char *argv[] = {"program", "-p", "A20"};
+    char ** argv2 = make_string_array((size_t)argc, argv);
+
+    cli_t * cli = parse_args(argc, argv2);
+    EXPECT_EQ(nullptr, cli);
+
+    free_string_array((size_t)argc, argv2);
+}

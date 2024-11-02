@@ -1,10 +1,9 @@
+#include <cli_parser.h>
 #include <errno.h>
+#include <internal_utils.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#include <cli_parser.h>
-#include <internal_utils.h>
 
 #define PORT_MAX 0xFFFF
 #define PORT_MIN 1024
@@ -46,18 +45,24 @@ DEBUG_STATIC uint16_t get_port_number(const char *number) {
     errno = 0;  // Reset errno to check for errors later
     const long result = strtol(number, &endptr, 10);
 
+    debug_print("Got %ld", result);
+
     // Error handling
     if (errno == ERANGE) {
         fprintf(stderr, "Value out of range\n");
+        goto ret_null;
     } else if (endptr == number) {
         fprintf(stderr, "No digits were found\n");
+        goto ret_null;
     } else if (*endptr != '\0') {
         fprintf(stderr, "Extra characters after the number\n");
+        goto ret_null;
     } else if (result > PORT_MAX || result < PORT_MIN) {
         fprintf(stderr, "Converted value is out of int range\n");
+        goto ret_null;
     }
-
     return (uint16_t)result;
+
+ret_null:
+    return 0;
 }
-
-

@@ -32,10 +32,16 @@ RUN apt-get install -y \
     gdb \
     libssl-dev \
     iputils-ping \
-    fzf \
     openssh-client;
 
 
+RUN apt-get install -y zsh curl;
+
+# Download zsh and setup fzf
+SHELL ["/bin/zsh", "-c"]
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended;
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf;
+RUN ~/.fzf/install;
 
 # Download, build, and install CMake
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz;
@@ -56,6 +62,19 @@ RUN update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-${LLVM_
 RUN update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${LLVM_VERSION} 100;
 RUN update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-${LLVM_VERSION} 100;
 
+# RUN cp /opt/fzf/bin/fzf /usr/local/bin/;
+#
+# # Manually add fzf key bindings and autocompletion
+# RUN /opt/fzf/shell/completion.bash > /etc/bash_completion.d/fzf && \
+#     /opt/fzf/shell/key-bindings.bash > /etc/profile.d/fzf-key-bindings.sh;
+#
+# # Source key bindings and completion in .bashrc
+# RUN echo 'source /etc/profile.d/fzf-key-bindings.sh' >> ~/.bashrc && \
+#     echo 'source /etc/bash_completion.d/fzf' >> ~/.bashrc;
+#
+# # Set the default shell to bash
+# SHELL ["/bin/bash", "-c"]
+#
 # Add the compilers needed to compile into raspberry pi
 RUN apt install -y \
     gcc-arm-linux-gnueabihf \

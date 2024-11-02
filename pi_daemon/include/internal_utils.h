@@ -2,7 +2,7 @@
 #define UTILS_H_
 #ifdef __cplusplus
 extern "C" {
-#endif //END __cplusplus
+#endif  // END __cplusplus
 
 /*!
  * DEBUG_PRINT - Used to print debugging statements to stderr only when
@@ -13,17 +13,16 @@ extern "C" {
  * that are meant to be private.
  */
 #ifdef NDEBUG
-#   define DEBUG_PRINT 0
-#   define DEBUG_STATIC static
+#define DEBUG_PRINT 0
+#define DEBUG_STATIC static
 #else
-#   define DEBUG_PRINT 1
-#   define DEBUG_STATIC
-#endif // End of DEBUG_PRINT
+#define DEBUG_PRINT 1
+#define DEBUG_STATIC
+#endif  // End of DEBUG_PRINT
 
-#include <stdio.h>
 #include <errno.h>
 #include <stdint.h>
-
+#include <stdio.h>
 
 /*
  * Enable printing debug messages when in debug mode. To print a non text
@@ -34,15 +33,19 @@ extern "C" {
  * The debug_print_err adds the file and line number to the output for more
  * information when wanting to debug.
  */
-#define debug_print_err(fmt, ...) \
-        do { if (DEBUG_PRINT) fprintf(stderr, "%s:%d:%s(): " fmt, __FILE__, \
-                                __LINE__, __func__, __VA_ARGS__); } while (0)
+#define debug_print_err(fmt, ...)                                             \
+    do {                                                                      \
+        if (DEBUG_PRINT)                                                      \
+            fprintf(stderr, "%s:%d:%s(): " fmt, __FILE__, __LINE__, __func__, \
+                    __VA_ARGS__);                                             \
+    } while (0)
 
-#define debug_print(fmt, ...) \
-            do { if (DEBUG_PRINT) fprintf(stderr, fmt, __VA_ARGS__); } while (0)
-
+#define debug_print(fmt, ...)                               \
+    do {                                                    \
+        if (DEBUG_PRINT) fprintf(stderr, fmt, __VA_ARGS__); \
+    } while (0)
 
 #ifdef __cplusplus
 }
-#endif //END __cplusplus
-#endif //UTILS_H_
+#endif  // END __cplusplus
+#endif  // UTILS_H_
