@@ -74,7 +74,18 @@ TEST(ArgParserTest, TestPortOutOfRange2) {
 
 TEST(ArgParserTest, TestPortOutOfRange3) {
     int argc = 3;
-    const char *argv[] = {"program", "-p", "A20"};
+    const char *argv[] = {"program", "--port", "A20"};
+    char ** argv2 = make_string_array((size_t)argc, argv);
+
+    cli_t * cli = parse_args(argc, argv2);
+    EXPECT_EQ(nullptr, cli);
+
+    free_string_array((size_t)argc, argv2);
+}
+
+TEST(ArgParserTest, TestPortOutOfRange4) {
+    int argc = 3;
+    const char *argv[] = {"program", "---port", "3000"};
     char ** argv2 = make_string_array((size_t)argc, argv);
 
     cli_t * cli = parse_args(argc, argv2);

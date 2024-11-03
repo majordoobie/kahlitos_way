@@ -1,5 +1,6 @@
 #include <cli_parser.h>
 #include <errno.h>
+#include <getopt.h>
 #include <internal_utils.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,30 +15,43 @@ cli_t *parse_args(int argc, char **argv) {
     int opt;
     uint16_t port = 0;
 
-    // Parse command-line options
-    while ((opt = getopt(argc, argv, "p:")) != -1) {
+    struct option long_options[] = {
+        {"help", no_argument, 0, 'h'},          // --help or -h
+        {"port", required_argument, 0, 'p'},    // --port or -p
+        {"config", required_argument, 0, 'c'},  // --config or -c
+        {0, 0, 0, 0}                            // End of options
+    };
+
+    // Parse options
+    while ((opt = getopt_long(argc, argv, "hp:c:", long_options, NULL)) != -1) {
         switch (opt) {
+            case 'h':
+                printf(
+                    "Usage: %s [--help] [--port <number>] [--config <file>]\n",
+                    argv[0]);
+                exit(0);
             case 'p':
                 port = get_port_number(optarg);
                 break;
-            case '?':
-                // Handle unknown option
-                fprintf(stderr, "Usage: %s -p <port>\n", argv[0]);
-                exit(EXIT_FAILURE);
+            default:
+                fprintf(stderr, "Unknown option\n");
+                goto ret_null;
         }
     }
-
     // Check if the port was set
     if (0 == port) {
         fprintf(stderr, "Error: -p option for port number is required.\n");
         fprintf(stderr, "Usage: %s -p <port>\n", argv[0]);
-        return NULL;
+        goto ret_null;
     }
 
     cli_t *args = malloc(sizeof(cli_t));
     args->port = port;
 
     return args;
+
+ret_null:
+    return NULL;
 }
 
 DEBUG_STATIC uint16_t get_port_number(const char *number) {
