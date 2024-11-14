@@ -1,0 +1,18 @@
+services:
+  kahlo_server:
+    container_name: kahlo_server
+    privileged: true
+    environment:
+      - HOST_PATH=${PWD}
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
+    build:
+      context: .
+      dockerfile: Dockerfile    
+    volumes:
+      - .:/opt/code
+    ports:
+      - 4444:4444
+      - 4445:4445

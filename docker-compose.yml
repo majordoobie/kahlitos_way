@@ -1,16 +1,4 @@
 services:
-  kahlo_service:
-    container_name: kahlo
-    privileged: true
-    security_opt:
-      - seccomp:unconfined
-    cap_add:
-      - SYS_PTRACE
-    build:
-      context: .
-      dockerfile: Dockerfile    
-    volumes:
-      - ./pi_daemon:/opt/code
-    ports:
-      - 4444:4444
-      - 4445:4445
+  kahlo_daemon:
+    extends: ../pi_daemon/docker-compose.yml
+    service: kahlo_server

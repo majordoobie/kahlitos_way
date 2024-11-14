@@ -1,5 +1,5 @@
-HOST_PATH="/Users/anker/OneDrive/Code/active_projects/kahlitos_way/pi_daemon"
 CONTAINER_PATH="/opt/code"
+echo $HOST_PATH
 
-sed -i "s|${CONTAINER_PATH}|${HOST_PATH}|g" "${1}"
+sed -i "s|${CONTAINER_PATH}|$HOST_PATH|g" "${1}"
 
