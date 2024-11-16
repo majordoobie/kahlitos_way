@@ -1,1 +1,0 @@
-include /usr/src/linux-headers-6.6.47+rpt-common-rpi/Makefile
