@@ -1,4 +1,5 @@
 services:
   kahlo_daemon:
-    extends: ../pi_daemon/docker-compose.yml
-    service: kahlo_server
+    extends: 
+      file: ./pi_daemon/docker-compose.yml
+      service: kahlo_server
