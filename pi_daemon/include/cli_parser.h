@@ -8,13 +8,18 @@ extern "C" {
 
 typedef struct {
     uint16_t port;
-    float day_max;
-    float day_min;
-    float night_max;
-    float night_min;
+    float day_temp;
+    float night_temp;
 } cli_t;
 
 cli_t* parse_args(int argc, char** argv);
+
+/**
+ * @brief Destroy the allocated cli_t object
+ *
+ * @param pp_cli Double pointer to cli_t object
+ */
+void destroy_cli(cli_t** pp_cli);
 
 #ifdef __cplusplus
 }
