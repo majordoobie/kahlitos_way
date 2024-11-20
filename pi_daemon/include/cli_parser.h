@@ -12,7 +12,6 @@ typedef struct {
     float night_temp;
 } cli_t;
 
-
 /**
  * @brief Parse the argv and argc values to create
  * and validate the clit_t object

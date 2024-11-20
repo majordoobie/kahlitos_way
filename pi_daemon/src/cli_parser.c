@@ -37,7 +37,7 @@ cli_t *parse_args(int argc, char **argv) {
                 printf(
                     "Usage: %s [--help] [--port <number>] [--config <file>]\n",
                     argv[0]);
-                exit(0);
+                goto ret_null;
             case 'p':
                 p_cli->port = get_port_number(optarg);
                 break;
@@ -56,7 +56,9 @@ cli_t *parse_args(int argc, char **argv) {
     return p_cli;
 
 ret_null:
-
+    if (NULL != p_cli) {
+        destroy_cli(&p_cli);
+    }
     return NULL;
 }
 
@@ -93,14 +95,13 @@ ret_null:
     return 0;
 }
 
-
 /**
  * @brief Allocate memory for the cli_t object
  *
  * @return cli_t object
  */
 static cli_t *get_cli_conf(void) {
-    cli_t *p_cli = malloc(sizeof(cli_t *));
+    cli_t *p_cli = malloc(sizeof(cli_t));
 
     if (NULL == p_cli) {
         fprintf(stderr, "Unable to allocate memory for cli_config");

@@ -10,6 +10,10 @@ WORKDIR ${BASE_DIR}
 # for some reason it ignores the `-y`
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Set pretty printing in ctest output
+ENV GTEST_COLOR=1
+ENV ASAN_OPTIONS=color=always
+
 #The --allow-releaseinfo-change option tells apt that you explicitly permit the repository's Release 
 #file to change its metadata (such as codename or version information).
 RUN apt-get --allow-releaseinfo-change update;
@@ -63,6 +67,7 @@ RUN update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-${LLVM_
 RUN update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${LLVM_VERSION} 100;
 RUN update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-${LLVM_VERSION} 100;
 RUN update-alternatives --install /usr/bin/lldb-server lldb-server /usr/bin/lldb-server-${LLVM_VERSION} 100;
+
 
 # Add the compilers needed to compile into raspberry pi
 RUN apt install -y \
