@@ -4,6 +4,7 @@
 extern "C" {
 #endif
 
+#include <internal_utils.h>
 #include <stdint.h>
 
 typedef struct {

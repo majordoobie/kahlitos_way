@@ -20,8 +20,6 @@ extern "C" {
 #define DEBUG_STATIC
 #endif  // End of DEBUG_PRINT
 
-#include <errno.h>
-#include <stdint.h>
 #include <stdio.h>
 
 /*

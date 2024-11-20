@@ -45,3 +45,12 @@ INSTANTIATE_TEST_CASE_P(
             std::make_tuple(std::vector<std::string>{"program", "---port", "A12"}, true),
             std::make_tuple(std::vector<std::string>{"-h"}, true)
         ));
+
+
+TEST(TestFloatConversion, TestOne) {
+    const char argv[] = "3.14";
+    float value;
+    uint8_t result = get_float(argv, &value);
+
+    EXPECT_EQ(result, 0);
+}

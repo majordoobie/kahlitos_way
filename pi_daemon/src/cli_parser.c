@@ -8,18 +8,22 @@
 
 #define PORT_MAX 0xFFFF
 #define PORT_MIN 1024
-#define DAY_TIME_TEMP 87
+
+#define DAY_TIME_TEMP 87.0f
 #define DAY_TIME_FLOAT 2
-#define NIGHT_TIME_TEMP 71
-#define NIGHT_TIME_FLOAT 1
 #define DAY_TIME_START 7
+
+#define NIGHT_TIME_TEMP 71.0f
+#define NIGHT_TIME_FLOAT 1
 #define NIGHT_TIME_START 20
 
 DEBUG_STATIC uint16_t get_port_number(const char *number);
+DEBUG_STATIC uint8_t get_float(const char *number, float *value);
 static cli_t *get_cli_conf(void);
 
 cli_t *parse_args(int argc, char **argv) {
     int opt;
+    uint8_t error = 0;
     cli_t *p_cli = get_cli_conf();  // null already checked
 
     struct option long_options[] = {
@@ -30,8 +34,9 @@ cli_t *parse_args(int argc, char **argv) {
         {0, 0, 0, 0}                                // End of options
     };
 
-    // Parse options
-    while ((opt = getopt_long(argc, argv, "hp:c:", long_options, NULL)) != -1) {
+    while (
+        (0 == error) &&
+        ((opt = getopt_long(argc, argv, "hp:c:", long_options, NULL)) != -1)) {
         switch (opt) {
             case 'h':
                 printf(
@@ -41,6 +46,10 @@ cli_t *parse_args(int argc, char **argv) {
             case 'p':
                 p_cli->port = get_port_number(optarg);
                 break;
+            case 'd':
+                if (0 != get_float(optarg, &p_cli->day_temp)) {
+                    error = 1;
+                }
             default:
                 fprintf(stderr, "Unknown option\n");
                 goto ret_null;
@@ -70,6 +79,26 @@ void destroy_cli(cli_t **pp_cli) {
     *pp_cli = NULL;
 }
 
+DEBUG_STATIC uint8_t get_float(const char *number, float *value) {
+    char *endptr;
+    uint8_t error = 0;
+    errno = 0;
+
+    *value = strtof(number, &endptr);
+    if (errno != 0 || *endptr != '\0') {
+        fprintf(stderr, "Invalid float value: %s\n", number);
+        error = 1;
+    }
+
+    return error;
+}
+
+/**
+ * @brief Parse the string to int
+ *
+ * @param number Pointer to string
+ * @return 0 on failure, else uint16_t
+ */
 DEBUG_STATIC uint16_t get_port_number(const char *number) {
     char *endptr = NULL;
     errno = 0;  // Reset errno to check for errors later
