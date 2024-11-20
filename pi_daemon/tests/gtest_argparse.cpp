@@ -1,95 +1,47 @@
 #include <stdlib.h>
+#include <cstring>
 
 #include <gtest/gtest.h>
 #include <cli_parser.h>
 
-/**
- * @brief Dynamically create an array of strings
- *
- * @param count Number of strings in the array
- * @param static_array Static array of strings to create
- * @return Array of dynammically allocated strings
- */
-char ** make_string_array(size_t count, const char ** static_array) {
-    char ** char_array = (char **)calloc(count, sizeof(char *));
-    if (NULL == char_array) {
-        return NULL;
+class CLIParserParameterizedTestFixture :public ::testing::TestWithParam<std::tuple<std::vector<std::string>,bool>> {};
+
+TEST_P(CLIParserParameterizedTestFixture, CheckArgValues) {
+    std::vector<std::string> args = std::get<0>(GetParam());
+    bool expect_null = std::get<1>(GetParam());
+
+    // Create a char** array
+    size_t count = args.size();
+    char **arg_strs = new char *[count]; // Allocate memory for the array of char*
+
+    // Convert std::string to char* and populate cStrings
+    for (size_t i = 0; i < count; i++) {
+        arg_strs[i] = new char[args[i].size() + 1]; // Allocate memory for each string
+        std::strcpy(arg_strs[i], args[i].c_str());  // Copy the string data
+    }
+
+    cli_t * cli = parse_args((int)count, arg_strs);
+    if (expect_null) {
+        EXPECT_EQ(nullptr, cli);
+    } else {
+        EXPECT_NE(nullptr, cli);
     }
 
     for (size_t i = 0; i < count; i++) {
-        char_array[i] = strdup(static_array[i]);
+        delete[] arg_strs[i]; // Free each string
     }
+    delete[] arg_strs;
 
-    return char_array;
 }
 
-
-/**
- * @brief Free the dynamically create array of strings
- *
- * @param count Nubmer of strings in the array.
- * @param string_array Array of strings to free
- */
-void free_string_array(size_t count, char ** string_array) {
-    for (size_t i = 0; i < count; i++) {
-        free(string_array[i]);
-    }
-    free(string_array);
-}
-
-
-TEST(ArgParserTest, TestNoOptions) {
-    int argc = 1;
-    const char *argv[] = {"program"};
-    char ** argv2 = make_string_array((size_t)argc, argv);
-
-    cli_t * cli = parse_args(argc, argv2);
-    EXPECT_EQ(nullptr, cli);
-
-    free_string_array((size_t)argc, argv2);
-}
-
-TEST(ArgParserTest, TestPortOutOfRange1) {
-    int argc = 3;
-    const char *argv[] = {"program", "-p", "1000"};
-    char ** argv2 = make_string_array((size_t)argc, argv);
-
-    cli_t * cli = parse_args(argc, argv2);
-    EXPECT_EQ(nullptr, cli);
-
-    free_string_array((size_t)argc, argv2);
-}
-
-TEST(ArgParserTest, TestPortOutOfRange2) {
-    int argc = 3;
-    const char *argv[] = {"program", "-p", "69000"};
-    char ** argv2 = make_string_array((size_t)argc, argv);
-
-    cli_t * cli = parse_args(argc, argv2);
-    EXPECT_EQ(nullptr, cli);
-
-    free_string_array((size_t)argc, argv2);
-}
-
-
-TEST(ArgParserTest, TestPortOutOfRange3) {
-    int argc = 3;
-    const char *argv[] = {"program", "--port", "A20"};
-    char ** argv2 = make_string_array((size_t)argc, argv);
-
-    cli_t * cli = parse_args(argc, argv2);
-    EXPECT_EQ(nullptr, cli);
-
-    free_string_array((size_t)argc, argv2);
-}
-
-TEST(ArgParserTest, TestPortOutOfRange4) {
-    int argc = 3;
-    const char *argv[] = {"program", "---port", "3000"};
-    char ** argv2 = make_string_array((size_t)argc, argv);
-
-    cli_t * cli = parse_args(argc, argv2);
-    EXPECT_EQ(nullptr, cli);
-
-    free_string_array((size_t)argc, argv2);
-}
+INSTANTIATE_TEST_CASE_P(
+        ArgChecks,
+        CLIParserParameterizedTestFixture,
+        ::testing::Values(
+            std::make_tuple(std::vector<std::string>{"program"}, true),
+            std::make_tuple(std::vector<std::string>{"program", "-p", "1000"}, true),
+            std::make_tuple(std::vector<std::string>{"program", "-p", "70000"}, true),
+            std::make_tuple(std::vector<std::string>{"program", "--port", "A12"}, true),
+            std::make_tuple(std::vector<std::string>{"program", "---port", "A12"}, true),
+            std::make_tuple(std::vector<std::string>{"-h"}, true)
+        ));
