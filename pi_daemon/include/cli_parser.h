@@ -12,6 +12,15 @@ typedef struct {
     float night_temp;
 } cli_t;
 
+
+/**
+ * @brief Parse the argv and argc values to create
+ * and validate the clit_t object
+ *
+ * @param argc Number of strings in argv
+ * @param argv Arguments passed into stdin
+ * @return cli_t object
+ */
 cli_t* parse_args(int argc, char** argv);
 
 /**
