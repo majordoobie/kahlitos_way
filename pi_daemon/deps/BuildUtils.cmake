@@ -10,7 +10,7 @@ FUNCTION(SetBoilerSettings)
     # Perform static analysis with clang-tidy if package is found
     find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
     if(CLANG_TIDY_EXE)
-        set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,readability-*" CACHE STRING "" FORCE)
+        set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,readability-*, -header-filter=.*" CACHE STRING "" FORCE)
     ELSEIF(NOT CLANG_TIDY_EXE)
         message(WARNING "Clan-Tidy not found. Will not apply static analysis")
     ENDIF()

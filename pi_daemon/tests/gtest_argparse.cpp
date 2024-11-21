@@ -4,6 +4,10 @@
 #include <gtest/gtest.h>
 #include <cli_parser.h>
 
+extern "C" {
+    uint8_t get_float(const char *number, float *value);
+}
+
 class CLIParserParameterizedTestFixture :public ::testing::TestWithParam<std::tuple<std::vector<std::string>,bool>> {};
 
 TEST_P(CLIParserParameterizedTestFixture, CheckArgValues) {
@@ -47,10 +51,11 @@ INSTANTIATE_TEST_CASE_P(
         ));
 
 
-TEST(TestFloatConversion, TestOne) {
+TEST(TestFloatConversion, FloatConversionTest) {
     const char argv[] = "3.14";
     float value;
     uint8_t result = get_float(argv, &value);
 
     EXPECT_EQ(result, 0);
+    EXPECT_FLOAT_EQ(3.14f, value);
 }

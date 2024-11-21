@@ -79,6 +79,14 @@ void destroy_cli(cli_t **pp_cli) {
     *pp_cli = NULL;
 }
 
+/**
+ * @brief Convert a float string into a float
+ *
+ * @param number Number string to convert
+ * @param value Resulting value
+ * @retval 0 on success
+ * @retval non-zero on failure
+ */
 DEBUG_STATIC uint8_t get_float(const char *number, float *value) {
     char *endptr;
     uint8_t error = 0;
@@ -86,7 +94,7 @@ DEBUG_STATIC uint8_t get_float(const char *number, float *value) {
 
     *value = strtof(number, &endptr);
     if (errno != 0 || *endptr != '\0') {
-        fprintf(stderr, "Invalid float value: %s\n", number);
+        debug_print_err("Invalid float value: %s\n", number);
         error = 1;
     }
 
