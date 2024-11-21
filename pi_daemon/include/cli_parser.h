@@ -14,6 +14,13 @@ typedef struct {
 } cli_t;
 
 /**
+ * @brief Printout the values of the cli config
+ *
+ * @param p_cli Pointer to the cli object
+ */
+void print_cli(cli_t* p_cli);
+
+/**
  * @brief Parse the argv and argc values to create
  * and validate the clit_t object
  *

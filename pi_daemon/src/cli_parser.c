@@ -21,6 +21,16 @@ DEBUG_STATIC uint16_t get_port_number(const char *number);
 DEBUG_STATIC uint8_t get_float(const char *number, float *value);
 static cli_t *get_cli_conf(void);
 
+
+void print_cli(cli_t *p_cli) {
+    if (NULL == p_cli) {
+        return;
+    }
+    printf("Sock: 0.0.0.0:%d\nday_temp: %.02f\nnight_temp: %.02f\n",
+           p_cli->port, p_cli->day_temp, p_cli->night_temp);
+}
+
+
 cli_t *parse_args(int argc, char **argv) {
     int opt;
     uint8_t error = 0;
@@ -34,9 +44,9 @@ cli_t *parse_args(int argc, char **argv) {
         {0, 0, 0, 0}                                // End of options
     };
 
-    while (
-        (0 == error) &&
-        ((opt = getopt_long(argc, argv, "hp:c:", long_options, NULL)) != -1)) {
+    while ((0 == error) &&
+           ((opt = getopt_long(argc, argv, "hp:d:n:", long_options, NULL)) !=
+            -1)) {
         switch (opt) {
             case 'h':
                 printf(
@@ -50,6 +60,12 @@ cli_t *parse_args(int argc, char **argv) {
                 if (0 != get_float(optarg, &p_cli->day_temp)) {
                     error = 1;
                 }
+                break;
+            case 'n':
+                if (0 != get_float(optarg, &p_cli->night_temp)) {
+                    error = 1;
+                }
+                break;
             default:
                 fprintf(stderr, "Unknown option\n");
                 goto ret_null;
@@ -71,6 +87,7 @@ ret_null:
     return NULL;
 }
 
+
 void destroy_cli(cli_t **pp_cli) {
     if ((NULL == pp_cli) || (NULL == *pp_cli)) {
         return;
@@ -78,6 +95,7 @@ void destroy_cli(cli_t **pp_cli) {
     free(*pp_cli);
     *pp_cli = NULL;
 }
+
 
 /**
  * @brief Convert a float string into a float
@@ -100,6 +118,7 @@ DEBUG_STATIC uint8_t get_float(const char *number, float *value) {
 
     return error;
 }
+
 
 /**
  * @brief Parse the string to int
@@ -131,6 +150,7 @@ DEBUG_STATIC uint16_t get_port_number(const char *number) {
 ret_null:
     return 0;
 }
+
 
 /**
  * @brief Allocate memory for the cli_t object
