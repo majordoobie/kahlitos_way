@@ -13,7 +13,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/deps")
 
 # Set boiler settings
 include(BuildUtils)
-SetBoilerSettings()
+    SetBoilerSettings()
 
 add_subdirectory(deps)
 

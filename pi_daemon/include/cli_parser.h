@@ -11,6 +11,8 @@ typedef struct {
     uint16_t port;
     float day_temp;
     float night_temp;
+    uint32_t day_start;
+    uint32_t night_start;
 } cli_t;
 
 /**

@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "base_help",
+            "type": "codelldb",
+            "request": "launch",
+            "program": "/opt/code/build/bin/main",
+            "args": "-h",
+            "initCommands": [
+                "log enable lldb breakpoint command",
+                "platform select remote-linux",
+                "platform connect connect://127.0.0.1:4444",
+                "settings set target.inherit-env false",
+                "settings set target.source-map /opt/code ${workspaceFolder}"
+            ]
+        },
+        {
+            "name": "cli_parser",
+            "type": "codelldb",
+            "request": "launch",
+            "program": "/opt/code/build/test_bin/gtest_utils",
+            "initCommands": [
+                "log enable lldb breakpoint command",
+                "platform select remote-linux",
+                "platform connect connect://127.0.0.1:4444",
+                "settings set target.inherit-env false",
+                "settings set target.source-map /opt/code ${workspaceFolder}"
+            ]
+        }
+    ]
+}

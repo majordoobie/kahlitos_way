@@ -6,7 +6,7 @@ extern "C" {
 
 #include <stdint.h>
 
-int8_t start_server(char * port);
+int8_t start_server(char* port);
 
 #ifdef __cplusplus
 }

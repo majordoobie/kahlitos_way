@@ -24,17 +24,14 @@ int8_t start_server(char* p_port) {
         .ai_flags = AI_PASSIVE,      // Use wildcard IP address (quad 0)
     };
 
-
-    // Request socket structures that meet our criteria. This is the current meta
-    // allos for automatic ipv4 vs ipv6
+    // Request socket structures that meet our criteria. This is the current
+    // meta allos for automatic ipv4 vs ipv6
     if (0 != getaddrinfo(NULL, p_port, &hints, &network_record_root)) {
         debug_print_err("[SERVER] Unable to fetch socket structures: %s\n",
                         strerror(errno));
         goto RET_NULL;
     }
 
-
 RET_NULL:
     return -1;
 }
-

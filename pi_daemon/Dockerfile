@@ -17,7 +17,7 @@ ENV ASAN_OPTIONS=color=always
 #The --allow-releaseinfo-change option tells apt that you explicitly permit the repository's Release 
 #file to change its metadata (such as codename or version information).
 RUN apt-get --allow-releaseinfo-change update;
- 
+
 RUN apt-get install -y unminimize;
 RUN yes | unminimize;
 

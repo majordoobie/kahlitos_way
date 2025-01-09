@@ -1,5 +1,6 @@
 #ifndef UTILS_H_
 #define UTILS_H_
+
 #ifdef __cplusplus
 extern "C" {
 #endif  // END __cplusplus
@@ -20,7 +21,14 @@ extern "C" {
 #define DEBUG_STATIC
 #endif  // End of DEBUG_PRINT
 
+#include <stdint.h>
 #include <stdio.h>
+
+typedef enum {
+    OK,
+    ERR,
+    MEM_ERR,
+} status_t;
 
 /*
  * Enable printing debug messages when in debug mode. To print a non text
@@ -42,6 +50,17 @@ extern "C" {
     do {                                                    \
         if (DEBUG_PRINT) fprintf(stderr, fmt, __VA_ARGS__); \
     } while (0)
+
+/**
+ * @brief Convert a string into a 4 byte uint32_t
+ *
+ * @param number String to convert
+ * @param result Where to place the finished product
+ * @return ERR on bad parsing, otherwise OK
+ */
+status_t str_to_4byte_num(const char *number, uint32_t *result);
+
+status_t str_to_float(const char *number, float *result);
 
 #ifdef __cplusplus
 }
