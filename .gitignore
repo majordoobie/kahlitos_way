@@ -1,4 +1,6 @@
 private/database.env
+.env
+.direnv/
 .idea
 private/config.py
 _init__.py

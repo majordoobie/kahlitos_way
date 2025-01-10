@@ -1,11 +1,12 @@
 from contextlib import contextmanager
 
-from sqlalchemy import Boolean, Column, BIGINT, DateTime, Float, create_engine, String
+from sqlalchemy import Boolean, Column, Integer, DateTime, Float, create_engine, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
-from private.config import DATABASE_URI
+DATABASE_URI = "sqlite:///tank_updates.db"
+
 
 Base = declarative_base()
 
@@ -13,7 +14,7 @@ Base = declarative_base()
 # Model
 class TankUpdate(Base):
     __tablename__ = "tank_update"
-    id = Column(BIGINT, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)  # Use Integer for primary key in SQLite
     update = Column(DateTime)
     successful_read = Column(Boolean)
     sensor_side = Column(String)
