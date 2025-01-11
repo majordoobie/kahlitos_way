@@ -266,8 +266,8 @@ def main() -> bool:
 
 
 if __name__ == "__main__":
-    print(Path(__file__).parent.resolve())
-    logging.config.fileConfig('logs/logging.conf')
+    log_path = Path(__file__).parent.resolve() / "logs/logging.conf"
+    logging.config.fileConfig(log_path)
     initial_start = True
     try:
         loop = True
