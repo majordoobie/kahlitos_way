@@ -1,6 +1,8 @@
 fastapi
 SQLAlchemy==1.4.11
 uvicorn
+psutil
+adafruit-circuitpython-dht
 
 #Adafruit-Blinka==6.5.0
 # adafruit-circuitpython-dht==3.6.0
@@ -20,7 +22,6 @@ uvicorn
 # pexpect==4.8.0
 # pickleshare==0.7.5
 # prompt-toolkit==3.0.18
-# psutil==5.8.0
 # psycopg2==2.8.6
 # ptyprocess==0.7.0
 # pydantic==1.8.1
