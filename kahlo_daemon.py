@@ -3,6 +3,7 @@ import logging.config
 from datetime import datetime, time
 from time import sleep
 from typing import List
+from pathlib import Path
 
 import psutil as psutil
 from adafruit_dht import DHT11
@@ -265,6 +266,7 @@ def main() -> bool:
 
 
 if __name__ == "__main__":
+    print(Path(__file__).parent.resolve())
     logging.config.fileConfig('logs/logging.conf')
     initial_start = True
     try:
