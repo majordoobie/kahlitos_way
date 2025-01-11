@@ -23,10 +23,11 @@
           packages = [
             pkgs.python313
             pkgs.python313Packages.pip
-                        #pkgs.python313Packages.psycopg2
             pkgs.git
             pkgs.docker
             pkgs.direnv
+            pkgs.nvim
+            pkgs.tmux
           ];
 
           # Create and activate a virtual environment, then install requirements
