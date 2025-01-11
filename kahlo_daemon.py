@@ -267,8 +267,6 @@ def main() -> bool:
 
 if __name__ == "__main__":
     log_path = Path(__file__).parent.resolve() / "logs/logging.conf"
-    print(log_path)
-    print(dir(log_path))
     logging.config.fileConfig(log_path)
     initial_start = True
     try:
