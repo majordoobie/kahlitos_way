@@ -26,7 +26,7 @@
             pkgs.git
             pkgs.docker
             pkgs.direnv
-            pkgs.nvim
+            pkgs.neovim
             pkgs.tmux
           ];
 
